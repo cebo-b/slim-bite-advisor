@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import FoodPhotoAnalyzer from "./FoodPhotoAnalyzer";
 
 interface FoodItem {
   id: number;
@@ -14,6 +15,16 @@ interface FoodItem {
   fat: number;
   portion: string;
   meal: string;
+}
+
+interface AnalyzedFood {
+  name: string;
+  calories: number;
+  protein: number;
+  carbs: number;
+  fat: number;
+  portion: string;
+  confidence: number;
 }
 
 const FoodLog = () => {
@@ -49,6 +60,21 @@ const FoodLog = () => {
     { id: "snacks", label: "Snacks", icon: "🍎" },
   ];
 
+  const handleFoodAnalyzed = (analyzedFood: AnalyzedFood) => {
+    const newFoodItem: FoodItem = {
+      id: Date.now(),
+      name: analyzedFood.name,
+      calories: analyzedFood.calories,
+      protein: analyzedFood.protein,
+      carbs: analyzedFood.carbs,
+      fat: analyzedFood.fat,
+      portion: analyzedFood.portion,
+      meal: selectedMeal
+    };
+    
+    setFoodItems(prev => [...prev, newFoodItem]);
+  };
+
   const getMealItems = (mealType: string) => {
     return foodItems.filter(item => item.meal === mealType);
   };
@@ -69,6 +95,9 @@ const FoodLog = () => {
           </div>
         </CardContent>
       </Card>
+
+      {/* AI Photo Analyzer */}
+      <FoodPhotoAnalyzer onFoodAnalyzed={handleFoodAnalyzed} />
 
       {/* Food Search */}
       <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
